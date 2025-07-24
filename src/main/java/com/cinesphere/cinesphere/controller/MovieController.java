@@ -2,21 +2,16 @@ package com.cinesphere.cinesphere.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.cinesphere.cinesphere.entity.Movie;
 import com.cinesphere.cinesphere.mapper.MovieMapper;
 import com.cinesphere.cinesphere.controller.request.MovieRequest;
 import com.cinesphere.cinesphere.controller.response.MovieResponse;
 import com.cinesphere.cinesphere.service.MovieService;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +22,7 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    
     @PostMapping
     public ResponseEntity<MovieResponse> save(@RequestBody MovieRequest movieRequest){
        Movie savedMovie = movieService.save(MovieMapper.toMovie(movieRequest));
@@ -61,6 +57,15 @@ public class MovieController {
         .stream()
         .map(MovieMapper::toMovieResponse)
         .toList());
-    
     }
+
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> delete(@PathVariable Long id) {
+    Optional<Movie> optMovie = movieService.findById(id);
+    if(optMovie.isPresent()){
+        movieService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    return ResponseEntity.notFound().build();
+}
 }

@@ -74,4 +74,8 @@ private List<Streaming> findStreamings(List<Streaming> streamings){
     streamings.forEach(streaming -> streamingService.getStreamingById(streaming.getId()).ifPresent(streamingsFound::add));
     return streamingsFound;
 }
+
+    public void delete(Long id){
+        movieRepository.deleteById(id);
+    }
 }
