@@ -31,6 +31,10 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
+    public List<Movie> findByCategory(Long categoryId){
+    return movieRepository.findMovieByCategories(List.of(CategoryEntity.builder().id(categoryId).build()));
+}
+
     public Optional<Movie> findById(Long id){
         return movieRepository.findById(id);
     }
@@ -70,7 +74,4 @@ private List<Streaming> findStreamings(List<Streaming> streamings){
     streamings.forEach(streaming -> streamingService.getStreamingById(streaming.getId()).ifPresent(streamingsFound::add));
     return streamingsFound;
 }
-
-
-
 }
