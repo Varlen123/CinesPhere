@@ -35,6 +35,30 @@ public class MovieService {
         return movieRepository.findById(id);
     }
 
+    public Optional<Movie> update (Long movieId, Movie movie){
+        Optional<Movie> optbById = movieRepository.findById(movieId);
+        if(optbById.isPresent()){
+            Movie movieFound = optbById.get();
+            movieFound.setTitle(movie.getTitle());
+            movieFound.setDescription(movie.getDescription());
+            movieFound.setReleaseDate(movie.getReleaseDate());
+            movieFound.setRating(movie.getRating());
+            movieFound.setStreamings(this.findStreamings(movie.getStreamings()));
+            movieFound.setCategories(this.findCategories(movie.getCategories()));
+
+            movieFound.getStreamings().clear();
+            movieFound.getCategories().clear();
+
+            movieFound.getStreamings().addAll(movie.getStreamings());
+            movieFound.getCategories().addAll(movie.getCategories());
+
+            movieRepository.save(movieFound);
+
+            return Optional.of(movieFound);
+        }
+        return Optional.empty();
+    }
+
     private List<CategoryEntity> findCategories(List<CategoryEntity> categories){
         List<CategoryEntity> categoriesFound = new ArrayList<>();
        categories.forEach(category -> categoryService.getCategoryById(category.getId()).ifPresent(categoriesFound::add));
